@@ -1,37 +1,46 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import React, { useEffect, useState } from "react";
+import { FlatList, View, Text } from "react-native";
 
-export default function Home(){
-    const [name, setName] = useState(''); // useState do nome
-    const [idade, setIdade] = useState(''); // useState do idade
-    const [sport, setSport] = useState('');  
-    return(
-        <View style ={styles.body}>
-            <TextInput 
-            placeholder='Digite seu nome' onChangeText={setName}
-            />
-            <TextInput 
-            placeholder='Digite sua idade' onChangeText={setIdade}
-            />
-              <TextInput 
-            placeholder='Digite seu esporte favorito' onChangeText={setSport}
-            />
-            <Text style={styles.title}>
-                Olá, eu sou {name}
-                Tenho anos {idade} de idade
-                E gosto muito de {sport}
-            </Text>
-             
-        </View>
-    );
+
+
+interface Personagem{
+    id: number;
+    name: string;
+    images: [string];
 }
 
-const styles = StyleSheet.create({
-    body: {
-        backgroundColor: "red",
-        padding: "auto"
-    },
-    title: {
-        fontSize: 19
-    }
-})
+
+export default function Home(){
+    const [personagem, setPersonagens] = useState<Personagem>([]);
+
+    useEffect(() => {
+        async function carregarPersonagens(){
+        const dados = await fetchCharacters();
+        setPersonagens(dados.characters)
+        }
+carregarPersonagens();
+    }, []);
+
+return (
+<View>
+  <Text> Lista de Personagens</Text>
+
+  <FlatList 
+  data={personagens}
+  keyExtractor={({item.id.toString()})} 
+  renderItem={({item}) => (
+  <View>
+     <Image source={{uri: item[0]}}>
+     <Text>{item.name} - {item.id}</Text>
+  </View>
+  )
+}
+
+ </View>
+
+
+)}
+
+function fetchCharacters() {
+    throw new Error("Function not implemented.");
+}
