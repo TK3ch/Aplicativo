@@ -1,46 +1,41 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, View, Text } from "react-native";
+import { FlatList, View, Text, Image } from "react-native";
+import { fetchCharacters } from "@/services/list";
 
-
-
-interface Personagem{
+interface Personagem {
     id: number;
     name: string;
     images: [string];
 }
 
-
-export default function Home(){
-    const [personagem, setPersonagens] = useState<Personagem>([]);
+export default function Home() {
+    const [personagens, setPersonagens] = useState<Personagem[]>([]);
 
     useEffect(() => {
-        async function carregarPersonagens(){
-        const dados = await fetchCharacters();
-        setPersonagens(dados.characters)
+        async function carregarPersonagens() {
+            const dados = await fetchCharacters();
+            setPersonagens(dados.characters)
         }
-carregarPersonagens();
+        carregarPersonagens();
     }, []);
 
-return (
-<View>
-  <Text> Lista de Personagens</Text>
+    return (
+        <View>
+            <Text> Lista de Personagens</Text>
 
-  <FlatList 
-  data={personagens}
-  keyExtractor={({item.id.toString()})} 
-  renderItem={({item}) => (
-  <View>
-     <Image source={{uri: item[0]}}>
-     <Text>{item.name} - {item.id}</Text>
-  </View>
-  )
-}
+            <FlatList
+                data={personagens}
+                keyExtractor={item => item.id.toString()}
+                renderItem={({ item }) => (
+                    <View>
+                        <Image source={{ uri: item.images[0] }}/>
+                        <Text>{item.name} - {item.id}</Text>
+                    </View>
+                )}
+            />
 
- </View>
+        </View>
 
 
-)}
-
-function fetchCharacters() {
-    throw new Error("Function not implemented.");
+    )
 }
